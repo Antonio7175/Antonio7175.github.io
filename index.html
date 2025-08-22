@@ -16,6 +16,7 @@
       --bg:#0b0f17; --bg-soft:rgba(255,255,255,0.06); --card:rgba(255,255,255,0.08);
       --fg:#e5f3ff; --muted:#b7c4d6; --accent:#5eead4; --accent-2:#60a5fa; --shadow:0 10px 30px rgba(0,0,0,.30);
       --radius:18px; --radius-s:12px; --radius-xl:28px;
+      --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
     }
     [data-theme="light"]{
       --bg:#f6f7fb; --bg-soft:rgba(0,0,0,.06); --card:rgba(255,255,255,.92);
@@ -23,30 +24,37 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";color:var(--fg);background:var(--bg);overflow-x:hidden}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";color:var(--fg);background:var(--bg);overflow-x:hidden;padding-bottom:var(--safe-bottom)}
     a{color:inherit;text-decoration:none}
     .container{width:min(1100px,92vw);margin:0 auto}
 
     /* ===== BG Ornaments ===== */
-    .bg-ornaments{
-      position:fixed;inset:-20vh -20vw auto -20vw;height:80vh;pointer-events:none;filter:blur(60px) saturate(130%);
+    .bg-ornaments{position:fixed;inset:-20vh -20vw auto -20vw;height:80vh;pointer-events:none;filter:blur(60px) saturate(130%);
       background:
         radial-gradient(60% 70% at 10% 20%, color-mix(in oklab, var(--accent) 60%, transparent), transparent 50%),
         radial-gradient(50% 60% at 90% 10%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 50%),
         radial-gradient(40% 50% at 70% 80%, rgba(244,114,182,0.18), transparent 50%);
-      animation: float 30s linear infinite alternate, hue 18s ease-in-out infinite; opacity:.9
-    }
+      animation: float 30s linear infinite alternate, hue 18s ease-in-out infinite; opacity:.9 }
     @keyframes float{ to{ transform: translate3d(0,-3vh,0) scale(1.03) } }
     @keyframes hue{ 0%,100%{filter:hue-rotate(0)} 50%{filter:hue-rotate(20deg)} }
 
     /* ===== NAV ===== */
-    nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(10px);
-      background:color-mix(in oklab, var(--bg) 70%, transparent);border-bottom:1px solid var(--bg-soft)}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+    nav{position:sticky;top:0;z-index:70;backdrop-filter:blur(10px);
+      background:color-mix(in oklab, var(--bg) 70%, transparent);border-bottom:1px solid var(--bg-soft);padding-top:var(--safe-top)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
     .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.3px}
     .brand .logo{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:var(--shadow);display:grid;place-items:center}
     .logo-text{font-weight:900;font-size:12px;line-height:1;color:#06111a;font-family:Inter,system-ui,sans-serif;letter-spacing:-.2px}
     .nav-actions{display:flex;align-items:center;gap:8px}
+    .hamb{display:none;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--bg-soft);color:var(--fg);cursor:pointer}
+
+    /* ===== Drawer móvil ===== */
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:78}
+    .drawer-backdrop.show{opacity:1;pointer-events:auto}
+    .drawer{position:fixed;inset:0 0 0 auto;width:min(320px,80vw);background:color-mix(in oklab, var(--bg) 85%, black);box-shadow:-20px 0 40px rgba(0,0,0,.4);transform:translateX(100%);transition:transform .25s ease;z-index:79;padding:20px}
+    .drawer.open{transform:translateX(0)}
+    .drawer .menu{display:grid;gap:10px}
+    .drawer .close{position:absolute;top:12px;right:12px}
 
     /* ===== Chips & Buttons ===== */
     .chip{padding:8px 12px;border-radius:999px;background:var(--bg-soft);color:var(--muted);font-weight:600;font-size:.92rem;transition:transform .15s ease, box-shadow .2s}
@@ -101,6 +109,10 @@
     .grow{flex:1}
     .project-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 
+    /* Media wrap para vídeos/imágenes responsivas */
+    .media-wrap{border-radius:12px;overflow:hidden;background:#000}
+    .media-wrap video{width:100%;height:auto;display:block}
+
     @media (min-width:740px){ .card{grid-column:span 6} }
     @media (min-width:1020px){ .card{grid-column:span 4} }
 
@@ -110,7 +122,7 @@
     .reveal.left{transform:translateX(-16px)} .reveal.right{transform:translateX(16px)} .reveal.up{transform:translateY(16px)}
 
     /* ===== Scroll progress ===== */
-    .scrollbar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:70}
+    .scrollbar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:80}
 
     /* ===== Palette Dock ===== */
     .palette{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;padding:8px;border-radius:14px;background:color-mix(in oklab, var(--bg) 60%, transparent);box-shadow:var(--shadow);backdrop-filter:blur(8px);z-index:65}
@@ -123,6 +135,11 @@
 
     footer{padding:48px 0 80px;color:var(--muted);text-align:center}
 
+    /* ====== Responsive tweaks ====== */
+    @media (max-width:980px){ .hero-grid{grid-template-columns:1fr} .avatar{width:160px} }
+    @media (max-width:780px){ .nav-actions{display:none} .hamb{display:flex} }
+    @media (max-width:560px){ .palette{left:50%;right:auto;transform:translateX(-50%);bottom:12px} }
+
     @media (prefers-reduced-motion:reduce){ *{animation:none !important;transition:none !important} }
   </style>
 </head>
@@ -133,6 +150,7 @@
   <nav>
     <div class="container nav-inner">
       <div class="brand"><span class="logo" aria-label="Logo con iniciales"><span id="logoText" class="logo-text">AP</span></span> <span id="brandName">Antonio Pérez Bermejo</span></div>
+      <button id="menuToggle" class="hamb" aria-label="Abrir menú">☰</button>
       <div class="nav-actions">
         <a href="#proyectos" class="chip">Proyectos</a>
         <a href="#experiencia" class="chip">Experiencia</a>
@@ -144,6 +162,21 @@
       </div>
     </div>
   </nav>
+
+  <!-- Drawer móvil -->
+  <div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
+  <aside id="drawer" class="drawer" aria-label="Menú">
+    <button id="drawerClose" class="btn ghost close" aria-label="Cerrar">✕</button>
+    <nav class="menu">
+      <a href="#proyectos" class="chip">Proyectos</a>
+      <a href="#experiencia" class="chip">Experiencia</a>
+      <a href="#certificaciones" class="chip">Certificaciones</a>
+      <a href="#videojuego" class="chip">Video</a>
+      <a href="#contacto" class="chip">Contacto</a>
+      <button id="themeToggleMobile" class="btn ghost" aria-label="Cambiar tema">🌓</button>
+      <a id="cvLinkMobile" class="btn" href="#" download="Antonio_Perez_Bermejo_CV.pdf" rel="noopener">Descargar CV</a>
+    </nav>
+  </aside>
 
   <header class="hero container">
     <div class="hero-grid">
@@ -192,10 +225,12 @@
       <h2 class="section-title">Videojuego</h2>
       <article class="card reveal">
         <h3 id="videoTitle" class="title" style="margin:0 0 8px">CarBanVania — Alpha (Unity, C#)</h3>
-        <video id="gameVideo" controls preload="metadata" style="width:100%; border-radius:12px" poster="">
-          <source id="gameVideoSrc" src="" type="video/mp4" />
-          Tu navegador no soporta vídeo.
-        </video>
+        <div class="media-wrap">
+          <video id="gameVideo" controls preload="metadata" poster="">
+            <source id="gameVideoSrc" src="" type="video/mp4" />
+            Tu navegador no soporta vídeo.
+          </video>
+        </div>
         <p id="videoDesc" class="muted" style="margin-top:12px"></p>
       </article>
     </section>
@@ -244,18 +279,8 @@
       skills: ["Java","C#","Python","PHP","JavaScript","HTML5","CSS","Bootstrap","Tailwind","Thymeleaf","React","Spring Boot","Spring Data JPA","Spring Security","MySQL","Maven","Docker","Swagger","Notion","APIs","Windows","Linux","Odoo"],
 
       experience: [
-        {
-          role: "Programador informático",
-          where: "SíOnline (Contrato de prácticas) · Presencial · Sevilla",
-          when: "mar. 2025 — actualidad",
-          desc: "Plataforma FUNDAE/SEPE: XML normativo, integración con APIs (SEPE), flujos de documentación, optimización de rendimiento, trabajo con equipo, control de versiones, pruebas e integración continua."
-        },
-        {
-          role: "Estudiante de desarrollo de software",
-          where: "Core Networks Sevilla · Presencial",
-          when: "sept. 2023 — jul. 2025",
-          desc: "Java, C#, Python, PHP; HTML5/CSS/Bootstrap/Tailwind/Thymeleaf; React; Spring Boot (JPA, Security); MySQL; Maven, Docker, Swagger, Notion; Windows/Linux; APIs y Odoo."
-        }
+        { role: "Programador informático", where: "SíOnline (Contrato de prácticas) · Presencial · Sevilla", when: "mar. 2025 — actualidad", desc: "Plataforma FUNDAE/SEPE: XML normativo, integración con APIs (SEPE), flujos de documentación, optimización de rendimiento, trabajo con equipo, control de versiones, pruebas e integración continua." },
+        { role: "Estudiante de desarrollo de software", where: "Core Networks Sevilla · Presencial", when: "sept. 2023 — jul. 2025", desc: "Java, C#, Python, PHP; HTML5/CSS/Bootstrap/Tailwind/Thymeleaf; React; Spring Boot (JPA, Security); MySQL; Maven, Docker, Swagger, Notion; Windows/Linux; APIs y Odoo." }
       ],
 
       certifications: [
@@ -288,271 +313,96 @@
 
     // ====== UTILIDADES ======
     const $ = s => document.querySelector(s);
-    const el = (tag, attrs={}, ...children) => {
-      const n=document.createElement(tag);
-      for (const [k,v] of Object.entries(attrs)){
-        if (k==='class') n.className=v; else if(k==='html') n.innerHTML=v; else n.setAttribute(k,v);
-      }
-      for (const c of children) n.appendChild(typeof c==='string'?document.createTextNode(c):c);
-      return n;
-    };
+    const el = (tag, attrs={}, ...children) => { const n=document.createElement(tag); for (const [k,v] of Object.entries(attrs)){ if (k==='class') n.className=v; else if(k==='html') n.innerHTML=v; else n.setAttribute(k,v); } for (const c of children) n.appendChild(typeof c==='string'?document.createTextNode(c):c); return n; };
     function setTheme(t){ document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); }
 
     async function resolveCV(){
       try{
-        const link = $('#cvLink'); if (!link) return;
+        const link = $('#cvLink'); const linkM = document.getElementById('cvLinkMobile');
         const tries = [CONFIG.cvUrl,'CVAPB.pdf','CVAPB.PDF','CVAPB.docx','CVAPB.doc','CVAPB','cv.pdf','CV.pdf','Antonio_Perez_Bermejo_CV.pdf'].filter(Boolean);
         for (const path of tries){
-          try{
-            const r = await fetch(path,{method:'HEAD'});
-            if (r.ok){ link.href=path; const ext=(path.split('.').pop()||'pdf').toLowerCase(); link.setAttribute('download',`Antonio_Perez_Bermejo_CV.${ext}`); return; }
-          }catch{}
+          try{ const r = await fetch(path,{method:'HEAD'}); if (r.ok){ [link,linkM].filter(Boolean).forEach(L=>{ L.href=path; const ext=(path.split('.').pop()||'pdf').toLowerCase(); L.setAttribute('download',`Antonio_Perez_Bermejo_CV.${ext}`); }); return; } }catch{}
         }
-        link.href='#'; link.removeAttribute('download');
+        [link,linkM].filter(Boolean).forEach(L=>{ L.href='#'; L.removeAttribute('download'); });
       }catch(e){ console.warn('No se pudo resolver el CV', e); }
     }
 
     function setFaviconFromInitials(txt){
-      try{
-        const size=64,c=document.createElement('canvas'); c.width=size; c.height=size; const ctx=c.getContext('2d');
-        const cs=getComputedStyle(document.documentElement); const a=cs.getPropertyValue('--accent').trim()||'#5eead4'; const b=cs.getPropertyValue('--accent-2').trim()||'#60a5fa';
-        const g=ctx.createLinearGradient(0,0,size,size); g.addColorStop(0,a); g.addColorStop(1,b);
-        const r=12,w=size,h=size;
-        ctx.fillStyle=g; ctx.beginPath();
-        ctx.moveTo(r,0); ctx.lineTo(w-r,0); ctx.quadraticCurveTo(w,0,w,r);
-        ctx.lineTo(w,h-r); ctx.quadraticCurveTo(w,h,w-r,h);
-        ctx.lineTo(r,h); ctx.quadraticCurveTo(0,h,0,h-r);
-        ctx.lineTo(0,r); ctx.quadraticCurveTo(0,0,r,0); ctx.closePath(); ctx.fill();
-        ctx.fillStyle='#06111a'; ctx.font='bold 36px Inter, Arial, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText((txt||'AP').slice(0,2).toUpperCase(), w/2, h/2+1);
-        (document.getElementById('favicon')||document.querySelector('link[rel="icon"]')).href = c.toDataURL('image/png');
-      }catch(err){ console.warn('favicon error',err); }
+      try{ const size=64,c=document.createElement('canvas'); c.width=size; c.height=size; const ctx=c.getContext('2d'); const cs=getComputedStyle(document.documentElement); const a=cs.getPropertyValue('--accent').trim()||'#5eead4'; const b=cs.getPropertyValue('--accent-2').trim()||'#60a5fa'; const g=ctx.createLinearGradient(0,0,size,size); g.addColorStop(0,a); g.addColorStop(1,b); const r=12,w=size,h=size; ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(r,0); ctx.lineTo(w-r,0); ctx.quadraticCurveTo(w,0,w,r); ctx.lineTo(w,h-r); ctx.quadraticCurveTo(w,h,w-r,h); ctx.lineTo(r,h); ctx.quadraticCurveTo(0,h,0,h-r); ctx.lineTo(0,r); ctx.quadraticCurveTo(0,0,r,0); ctx.closePath(); ctx.fill(); ctx.fillStyle='#06111a'; ctx.font='bold 36px Inter, Arial, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText((txt||'AP').slice(0,2).toUpperCase(), w/2, h/2+1); (document.getElementById('favicon')||document.querySelector('link[rel="icon"]')).href = c.toDataURL('image/png'); }catch(err){ console.warn('favicon error',err); }
     }
 
     // ====== RENDER DESDE CONFIG ======
     function renderFromConfig(){
-      $('#brandName').textContent = CONFIG.name;
-      $('#heroName').textContent  = CONFIG.name;
-      $('#role').textContent      = CONFIG.role;
-      $('#location').textContent  = CONFIG.location;
-      $('#bio').textContent       = CONFIG.bio;
-      $('#year').textContent      = new Date().getFullYear();
+      $('#brandName').textContent = CONFIG.name; $('#heroName').textContent  = CONFIG.name; $('#role').textContent=CONFIG.role; $('#location').textContent=CONFIG.location; $('#bio').textContent=CONFIG.bio; $('#year').textContent=new Date().getFullYear();
       resolveCV();
 
-      const gh = CONFIG.githubUsername ? `https://github.com/${CONFIG.githubUsername}` : '#';
-      $('#linkGithub').href = gh; $('#moreGithub').href = gh;
-      $('#linkLinkedin').href = CONFIG.linkedinUrl || '#';
-      $('#ctaLinkedin').href  = CONFIG.linkedinUrl || '#';
-      $('#mailto').href       = `mailto:${CONFIG.email}?subject=${encodeURIComponent('¡Hola ' + CONFIG.name + '!')}`;
+      const gh = CONFIG.githubUsername ? `https://github.com/${CONFIG.githubUsername}` : '#'; $('#linkGithub').href=gh; $('#moreGithub').href=gh; $('#linkLinkedin').href=CONFIG.linkedinUrl||'#'; $('#ctaLinkedin').href=CONFIG.linkedinUrl||'#'; $('#mailto').href=`mailto:${CONFIG.email}?subject=${encodeURIComponent('¡Hola ' + CONFIG.name + '!')}`;
 
-      const initials = (CONFIG.initials || (CONFIG.name.split(' ').map(w=>w[0]).join('').slice(0,2))).toUpperCase();
-      const lt = document.getElementById('logoText'); if (lt) lt.textContent = initials;
-      setFaviconFromInitials(initials);
+      const initials = (CONFIG.initials || (CONFIG.name.split(' ').map(w=>w[0]).join('').slice(0,2))).toUpperCase(); const lt=document.getElementById('logoText'); if (lt) lt.textContent=initials; setFaviconFromInitials(initials);
 
-      const av = $('#avatar');
-      if (CONFIG.photoUrl){ av.style.backgroundImage=`url(${CONFIG.photoUrl})`; av.style.backgroundSize='cover'; av.style.backgroundPosition='center'; av.textContent=''; }
-      else { av.textContent = initials; }
+      const av = $('#avatar'); if (CONFIG.photoUrl){ av.style.backgroundImage=`url(${CONFIG.photoUrl})`; av.style.backgroundSize='cover'; av.style.backgroundPosition='center'; av.textContent=''; } else { av.textContent = initials; }
 
       // Skills
-      const wrap = $('#skillsWrap'); wrap.innerHTML = '';
-      CONFIG.skills.forEach((s,i)=> wrap.appendChild(el('span',{class:`skill reveal ${i%2?'left':'right'}`}, s)));
+      const wrap=$('#skillsWrap'); wrap.innerHTML=''; CONFIG.skills.forEach((s,i)=> wrap.appendChild(el('span',{class:`skill reveal ${i%2?'left':'right'}`}, s)));
 
       // Experiencia
-      const t = $('#timeline'); t.innerHTML = '';
-      CONFIG.experience.forEach((item,i)=>{
-        t.appendChild(el('div',{class:`tl-item reveal ${i%2?'left':'right'}`},
-          el('h4',{},item.role),
-          el('div',{class:'where'},`${item.where} • ${item.when}`),
-          el('p',{class:'muted'}, item.desc)
-        ));
-      });
+      const t=$('#timeline'); t.innerHTML=''; CONFIG.experience.forEach((item,i)=> t.appendChild(el('div',{class:`tl-item reveal ${i%2?'left':'right'}`}, el('h4',{},item.role), el('div',{class:'where'},`${item.where} • ${item.when}`), el('p',{class:'muted'},item.desc) )));
 
       // Certificaciones
-      const cg = $('#certsGrid'); cg.innerHTML = '';
-      (CONFIG.certifications||[]).forEach((c,i)=>{
-        const details=[c.date?`Expedición: ${c.date}`:'', c.credentialId?`ID: ${c.credentialId}`:''].filter(Boolean).join(' • ');
-        cg.appendChild(el('article',{class:`card reveal ${i%2?'left':'right'}`},
-          el('div',{class:'meta'}, el('span',{class:'badge'}, c.issuer||'')),
-          el('h3',{class:'title'}, c.name),
-          el('p',{class:'muted'}, c.details||details||''),
-          el('div',{class:'project-actions'}, c.url? el('a',{class:'btn ghost',href:c.url,target:'_blank',rel:'noopener'},'Ver credencial'): el('span',{}))
-        ));
-      });
+      const cg=$('#certsGrid'); cg.innerHTML=''; (CONFIG.certifications||[]).forEach((c,i)=>{ const details=[c.date?`Expedición: ${c.date}`:'', c.credentialId?`ID: ${c.credentialId}`:''].filter(Boolean).join(' • '); cg.appendChild(el('article',{class:`card reveal ${i%2?'left':'right'}`}, el('div',{class:'meta'}, el('span',{class:'badge'}, c.issuer||'')), el('h3',{class:'title'}, c.name), el('p',{class:'muted'}, c.details||details||''), el('div',{class:'project-actions'}, c.url? el('a',{class:'btn ghost',href:c.url,target:'_blank',rel:'noopener'},'Ver credencial'): el('span',{}) ))); });
 
       // Video
-      const V = CONFIG.video;
-      if (V){
-        const v=$('#gameVideo'), src=$('#gameVideoSrc'), vt=$('#videoTitle'), vd=$('#videoDesc');
-        if (V.poster) v.setAttribute('poster', V.poster);
-        if (src){ src.src = V.src || ''; try{ v.load(); }catch{} }
-        if (vt) vt.textContent = V.title || 'Videojuego';
-        if (vd){
-          const thanks = (V.credits||[]).map(c=>`<a href="${c.url}" target="_blank" rel="noopener">${c.name}</a>`).join(', ');
-          vd.innerHTML = `${V.description||''}${thanks? `<br>Créditos artísticos: ${thanks}.` : ''}`;
-        }
-      }
+      const V=CONFIG.video; if (V){ const v=$('#gameVideo'), src=$('#gameVideoSrc'), vt=$('#videoTitle'), vd=$('#videoDesc'); if (V.poster) v.setAttribute('poster', V.poster); if (src){ src.src=V.src||''; try{ v.load(); }catch{} } if (vt) vt.textContent=V.title||'Videojuego'; if (vd){ const thanks=(V.credits||[]).map(c=>`<a href="${c.url}" target="_blank" rel="noopener">${c.name}</a>`).join(', '); vd.innerHTML=`${V.description||''}${thanks? `<br>Créditos artísticos: ${thanks}.`: ''}`; } }
 
       // Proyectos (manual)
       renderManualProjects(CONFIG.projects||[]);
 
       // Títulos con reveal
-      document.querySelectorAll('.section-title').forEach(h => h.classList.add('reveal'));
+      document.querySelectorAll('.section-title').forEach(h=>h.classList.add('reveal'));
 
-      // Construir paleta y tilt
-      buildPalette();
-      initTilt();
+      // Paleta y tilt
+      buildPalette(); initTilt();
     }
 
-    function renderManualProjects(list=[]){
-      const cards = list.map(p=>({
-        name:p.name,
-        description:p.description||'Proyecto',
-        language:(p.tags&&p.tags[0])||'',
-        stargazers_count:0,
-        updated_at:new Date().toISOString(),
-        html_url:p.codeUrl||'#',
-        homepage:p.homepage||p.codeUrl||'#'
-      }));
-      renderProjects(cards);
-    }
+    function renderManualProjects(list=[]){ const cards=list.map(p=>({ name:p.name, description:p.description||'Proyecto', language:(p.tags&&p.tags[0])||'Multi', stargazers_count:0, updated_at:new Date().toISOString(), html_url:p.codeUrl||'#', homepage:p.homepage||p.codeUrl||'#' })); renderProjects(cards); }
 
-    function renderProjects(repos){
-      const grid = $('#projectsGrid'); grid.innerHTML='';
-      repos.forEach((r,i)=>{
-        const stars = `★ ${r.stargazers_count||0}`;
-        const lang  = r.language || 'Multi';
-        const updated = new Date(r.updated_at).toLocaleDateString(undefined,{year:'numeric',month:'short'});
-        const home = r.homepage && r.homepage.startsWith('http') ? r.homepage : r.html_url;
-
-        grid.appendChild(el('article',{class:`card reveal ${i%3===0?'left': i%3===1?'up':'right'}`},
-          el('div',{class:'meta'},
-            el('span',{class:'badge'},lang), el('span',{},'·'),
-            el('span',{},stars),           el('span',{},'·'),
-            el('span',{},`upd ${updated}`)
-          ),
-          el('h3',{class:'title'}, r.name),
-          el('p',{class:'muted'}, r.description||'Proyecto'),
-          el('div',{class:'grow'}),
-          el('div',{class:'project-actions'},
-            el('a',{class:'btn',href:home,target:'_blank',rel:'noopener'},'Ver proyecto'),
-            el('a',{class:'btn ghost',href:r.html_url,target:'_blank',rel:'noopener'},'Ver código')
-          )
-        ));
-      });
-    }
+    function renderProjects(repos){ const grid=$('#projectsGrid'); grid.innerHTML=''; repos.forEach((r,i)=>{ const stars=`★ ${r.stargazers_count||0}`, lang=r.language||'Multi', updated=new Date(r.updated_at).toLocaleDateString(undefined,{year:'numeric',month:'short'}), home=r.homepage&&r.homepage.startsWith('http')? r.homepage : r.html_url; grid.appendChild(el('article',{class:`card reveal ${i%3===0?'left': i%3===1?'up':'right'}`}, el('div',{class:'meta'}, el('span',{class:'badge'},lang), el('span',{},'·'), el('span',{},stars), el('span',{},'·'), el('span',{},`upd ${updated}`)), el('h3',{class:'title'}, r.name), el('p',{class:'muted'}, r.description||'Proyecto'), el('div',{class:'grow'}), el('div',{class:'project-actions'}, el('a',{class:'btn',href:home,target:'_blank',rel:'noopener'},'Ver proyecto'), el('a',{class:'btn ghost',href:r.html_url,target:'_blank',rel:'noopener'},'Ver código') ))); }); }
 
     // ===== Tilt effect =====
-    function initTilt(){
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const items=[...document.querySelectorAll('.card'), $('#avatar')].filter(Boolean);
-      items.forEach(it=>{
-        const onMove=(e)=>{
-          const r=it.getBoundingClientRect();
-          const cx=r.left+r.width/2, cy=r.top+r.height/2;
-          const dx=(e.clientX-cx)/r.width, dy=(e.clientY-cy)/r.height;
-          it.style.transform = `perspective(700px) rotateX(${(-dy*6).toFixed(2)}deg) rotateY(${(dx*6).toFixed(2)}deg) translateY(-2px)`;
-        };
-        const off=()=>{ it.style.transform=''; };
-        it.addEventListener('mousemove',onMove);
-        it.addEventListener('mouseleave',off);
-      });
-    }
+    function initTilt(){ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; const items=[...document.querySelectorAll('.card'), $('#avatar')].filter(Boolean); items.forEach(it=>{ const onMove=(e)=>{ const r=it.getBoundingClientRect(); const cx=r.left+r.width/2, cy=r.top+r.height/2; const dx=(e.clientX-cx)/r.width, dy=(e.clientY-cy)/r.height; it.style.transform = `perspective(700px) rotateX(${(-dy*6).toFixed(2)}deg) rotateY(${(dx*6).toFixed(2)}deg) translateY(-2px)`; }; const off=()=>{ it.style.transform=''; }; it.addEventListener('mousemove',onMove); it.addEventListener('mouseleave',off); }); }
 
     // ===== Palette & Party mode =====
-    const PALETTES = {
-      aqua:   { a:'#5eead4', b:'#60a5fa' },
-      sunset: { a:'#f472b6', b:'#f59e0b' },
-      lime:   { a:'#a3e635', b:'#22c55e' },
-      violet: { a:'#a78bfa', b:'#22d3ee' },
-      fire:   { a:'#fb7185', b:'#f97316' }
-    };
+    const PALETTES = { aqua:{a:'#5eead4',b:'#60a5fa'}, sunset:{a:'#f472b6',b:'#f59e0b'}, lime:{a:'#a3e635',b:'#22c55e'}, violet:{a:'#a78bfa',b:'#22d3ee'}, fire:{a:'#fb7185',b:'#f97316'} };
+    function applyPalette(key){ const p=PALETTES[key]; if(!p) return; document.documentElement.style.setProperty('--accent', p.a); document.documentElement.style.setProperty('--accent-2', p.b); localStorage.setItem('palette', key); setFaviconFromInitials((CONFIG.initials||'AP')); }
+    let partyTimer=null, partyIndex=0; function startPartyMode(){ if (partyTimer) clearInterval(partyTimer); document.body.classList.add('party'); localStorage.setItem('party','1'); const keys=Object.keys(PALETTES); const savedKey=localStorage.getItem('palette'); partyIndex=Math.max(0, keys.indexOf(savedKey)); partyTimer=setInterval(()=>{ partyIndex=(partyIndex+1)%keys.length; applyPalette(keys[partyIndex]); },4000); } function stopPartyMode(){ document.body.classList.remove('party'); localStorage.removeItem('party'); if (partyTimer){ clearInterval(partyTimer); partyTimer=null; } } function setPartyMode(on){ if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) on=false; on? startPartyMode() : stopPartyMode(); }
+    function buildPalette(){ const dock=$('#paletteDock'); dock.innerHTML=''; let partyBtn; Object.entries(PALETTES).forEach(([k,v])=>{ const btn=el('button',{class:'swatch',title:k,style:`background:linear-gradient(135deg, ${v.a}, ${v.b})`}); btn.addEventListener('click',()=>{ stopPartyMode(); applyPalette(k); partyBtn && partyBtn.classList.remove('active'); }); dock.appendChild(btn); }); partyBtn=el('button',{class:'party-toggle',title:'Modo fiesta'},'🎉 Fiesta'); partyBtn.addEventListener('click',()=>{ const on=!document.body.classList.contains('party'); setPartyMode(on); partyBtn.classList.toggle('active', on); }); dock.appendChild(partyBtn); const saved=localStorage.getItem('palette'); if (saved && PALETTES[saved]) applyPalette(saved); if (localStorage.getItem('party')==='1'){ setPartyMode(true); partyBtn.classList.add('active'); } }
 
-    function applyPalette(key){
-      const p = PALETTES[key]; if(!p) return;
-      document.documentElement.style.setProperty('--accent', p.a);
-      document.documentElement.style.setProperty('--accent-2', p.b);
-      localStorage.setItem('palette', key);
-      setFaviconFromInitials((CONFIG.initials||'AP'));
-    }
-
-    let partyTimer=null, partyIndex=0;
-    function startPartyMode(){
-      if (partyTimer) clearInterval(partyTimer);
-      document.body.classList.add('party');
-      localStorage.setItem('party','1');
-      const keys=Object.keys(PALETTES);
-      const savedKey=localStorage.getItem('palette');
-      partyIndex = Math.max(0, keys.indexOf(savedKey));
-      partyTimer=setInterval(()=>{
-        partyIndex=(partyIndex+1)%keys.length;
-        applyPalette(keys[partyIndex]);
-      },4000);
-    }
-    function stopPartyMode(){
-      document.body.classList.remove('party');
-      localStorage.removeItem('party');
-      if (partyTimer){ clearInterval(partyTimer); partyTimer=null; }
-    }
-    function setPartyMode(on){
-      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) on=false;
-      on? startPartyMode() : stopPartyMode();
-    }
-
-    function buildPalette(){
-      const dock=$('#paletteDock'); dock.innerHTML='';
-      let partyBtn;
-
-      // Swatches
-      Object.entries(PALETTES).forEach(([k,v])=>{
-        const btn = el('button',{class:'swatch',title:k,style:`background:linear-gradient(135deg, ${v.a}, ${v.b})`});
-        btn.addEventListener('click',()=>{ stopPartyMode(); applyPalette(k); partyBtn && partyBtn.classList.remove('active'); });
-        dock.appendChild(btn);
-      });
-
-      // Botón fiesta
-      partyBtn = el('button',{class:'party-toggle',title:'Modo fiesta'},'🎉 Fiesta');
-      partyBtn.addEventListener('click',()=>{
-        const on=!document.body.classList.contains('party');
-        setPartyMode(on);
-        partyBtn.classList.toggle('active', on);
-      });
-      dock.appendChild(partyBtn);
-
-      // Restaurar estado
-      const saved = localStorage.getItem('palette'); if (saved && PALETTES[saved]) applyPalette(saved);
-      if (localStorage.getItem('party')==='1'){ setPartyMode(true); partyBtn.classList.add('active'); }
-    }
+    // ===== Drawer mobile =====
+    const menuToggle = document.getElementById('menuToggle');
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const drawerClose = document.getElementById('drawerClose');
+    const openDrawer = ()=>{ drawer.classList.add('open'); backdrop.classList.add('show'); };
+    const closeDrawer = ()=>{ drawer.classList.remove('open'); backdrop.classList.remove('show'); };
+    menuToggle.addEventListener('click', openDrawer);
+    drawerClose.addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') closeDrawer(); });
+    document.querySelectorAll('.drawer a[href^="#"]').forEach(a=> a.addEventListener('click', closeDrawer));
 
     // ===== Reveal on scroll =====
     const io = new IntersectionObserver((entries)=>{ for (const e of entries){ if (e.isIntersecting) e.target.classList.add('in'); } }, { threshold:.1 });
     const revealAll = () => document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     // ===== Scroll progress =====
-    function onScrollBar(){
-      const h=document.documentElement; const sc=h.scrollTop;
-      const max=h.scrollHeight-h.clientHeight;
-      const pct = max? (sc/max)*100 : 0;
-      $('#scrollbar').style.width = pct + '%';
-    }
+    function onScrollBar(){ const h=document.documentElement; const sc=h.scrollTop; const max=h.scrollHeight-h.clientHeight; const pct = max? (sc/max)*100 : 0; $('#scrollbar').style.width = pct + '%'; }
 
     // ===== THEME TOGGLE & INIT =====
     const savedTheme = localStorage.getItem('theme'); if (savedTheme) setTheme(savedTheme);
-    document.addEventListener('DOMContentLoaded', () => {
-      renderFromConfig(); revealAll(); onScrollBar();
-      document.getElementById('themeToggle').addEventListener('click', ()=>{
-        const cur=document.documentElement.getAttribute('data-theme')||'dark';
-        const next=cur==='dark'?'light':'dark';
-        setTheme(next);
-        setFaviconFromInitials((CONFIG.initials||'AP'));
-      });
-      document.addEventListener('scroll', onScrollBar, {passive:true});
-    });
+    document.addEventListener('DOMContentLoaded', () => { renderFromConfig(); revealAll(); onScrollBar(); document.getElementById('themeToggle').addEventListener('click', ()=>{ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const next=cur==='dark'?'light':'dark'; setTheme(next); setFaviconFromInitials((CONFIG.initials||'AP')); }); document.getElementById('themeToggleMobile').addEventListener('click', ()=>{ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const next=cur==='dark'?'light':'dark'; setTheme(next); setFaviconFromInitials((CONFIG.initials||'AP')); }); document.addEventListener('scroll', onScrollBar, {passive:true}); });
 
     // ===== ANCLAS =====
-    document.addEventListener('click', (e)=>{
-      const a=e.target.closest('a[href^="#"]');
-      if (a){ e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'}) }
-    });
+    document.addEventListener('click', (e)=>{ const a=e.target.closest('a[href^="#"]'); if (a){ e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'}) } });
 
     // ===== JSON-LD =====
     const schema = {'@context':'https://schema.org','@type':'Person', name:CONFIG.name, jobTitle:CONFIG.role, email:CONFIG.email, url:window.location.href, sameAs:[CONFIG.linkedinUrl, `https://github.com/${CONFIG.githubUsername}`]};
